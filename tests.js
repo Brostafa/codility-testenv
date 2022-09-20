@@ -1,14 +1,5 @@
 /**
- * Custom test runner.
- * 
- * We use JSON.stringify to send these tests to the child
- * which is handled automatically by child.send() function call and it ends up having some caveats
- * 
- * @caveat
- * NaN, Infinity, -Infinity, undefined will be considered as null
- * 
- * @resources
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#description
+ * Custom test runner for Codility.
  */
 
 // if -1, run all tests
@@ -27,7 +18,7 @@ const ALL_TESTS = [
     null
   ],
   [
-    [null, 0],
+    [, 0],
     null
   ],
   [
@@ -39,8 +30,8 @@ const ALL_TESTS = [
     null
   ],
   [
-    ['Invalid', 2],
-    null
+    ['Invalid123', 2],
+    null,
   ],
 
   /** Simple cases */
@@ -55,7 +46,7 @@ const ALL_TESTS = [
   [
     ['2', 2],
     '4'
-  ]
+  ],
 
   /** Big dataset cases */
   [
@@ -63,6 +54,8 @@ const ALL_TESTS = [
     '100000000000000000000000000001'
   ]
 ]
+  // Add index to each test (in case we have oneTestIndex > 0 we can find its index)
+  .map((test, index) => test?.concat([index]))
 
 module.exports = oneTestIndex === -1
   ? ALL_TESTS

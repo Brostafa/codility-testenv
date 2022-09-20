@@ -4,10 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon runner.js"
+    "dev": "mocha runner.js -w runner.js -w tests.js"
   },
   "dependencies": {
-    "chalk": "4",
+    "eslint": "^8.23.1",
     "mocha": "^10.0.0"
   }
 }

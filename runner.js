@@ -1,7 +1,7 @@
-const { fork } = require('child_process')
 const tests = require('./tests').filter(Boolean)
-const chalk = require('chalk')
-const TIMEOUT_PER_TEST = 5 * 1000
+const TIMEOUT_PER_TEST = 10 * 1000
+const solution = require('./solution')
+const { deepStrictEqual } = require('assert')
 
 const checkIfTestsAreValid = testsToValidate => {
   const type = typeof testsToValidate
@@ -15,88 +15,30 @@ const checkIfTestsAreValid = testsToValidate => {
     const testType = typeof test
 
     if (!Array.isArray(test)) {
+      console.log(test)
       throw new Error(`tests[${index}] isn't of type array. type="${testType}"`)
     }
 
     if (!Array.isArray(test[0])) {
+      console.log(test)
+
       throw new Error(`tests[${index}][0] INPUTS aren't an array. tests[${index}]="${test[0]}"`)
     }
 
-    if (test.length !== 2) {
-      throw new Error(`tests[${index}] has less/more than 2 elements. len="${test.length}"`)
+    if (test.length !== 3) {
+      console.log(test)
+
+      throw new Error(`tests[${index}] has less/more than 3 elements. We expect you to create arrays of 2. len="${test.length}"`)
     }
   }
 }
 
-const spawnChild = test => {
-  const child = fork('./solution-child.js')
+checkIfTestsAreValid(tests)
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      child.kill('SIGKILL')
+for (const index in tests) {
+  const [ inputs, output, testIndex ] = tests[index]
 
-      resolve(2)
-    }, TIMEOUT_PER_TEST)
-
-    // child will return errorCode
-    // errorCode = 0 --> success
-    // errorCode = 1 --> failed
-    child.on('message', resolve)
-
-    // send test to child
-    child.send(test)
-  })
+  it(`testIndex="${testIndex}"`, () => {
+    deepStrictEqual(solution(...inputs), output)
+  }).timeout(TIMEOUT_PER_TEST)
 }
-
-const start = async () => {
-  // validate that we have the correct tests template
-  console.log(
-    chalk.whiteBright(`[Runner] Found ${tests.length} tests\n`)
-  )
-
-  checkIfTestsAreValid(tests)
-  let success = 0
-  let failed = 0
-  let timeout = 0
-  const testsWithIndex = tests.map((test, index) => {
-    return [
-      ...test,
-      index
-    ]
-  })
-
-  const promises = testsWithIndex.map(async (test, index) => {
-    const code = await spawnChild(test)
-
-    if (code === 0) {
-      success++
-    } else if (code === 1) {
-      console.log(
-        chalk.red(`[Test] index="${index}" failed`)
-      )
-      failed++
-    } else if (code === 2) {
-      failed++
-      timeout++
-    }
-  })
-
-  await Promise.all(promises)
-
-  console.log('\n\n----Results----')
-  console.log(`[Runner] Total: ${tests.length} | Success: ${success} | Failed: ${failed} (timeout: ${timeout})`)
-
-  if (tests.length === success) {
-    console.log(
-      chalk.green('[Runner] --> All tests passed!!')
-    )
-  } else {
-    console.log(
-      chalk.red(`[Runner] --> Some tests didn't pass`)
-    )
-  }
-
-  process.exit(0)
-}
-
-start()

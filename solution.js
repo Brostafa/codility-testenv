@@ -1,9 +1,12 @@
-/** Write a solution given N, K where N is an integer */
-
+// Write your solution here
 const solution = (num1, num2) => {
-  console.log({num1, num2})
-  // if (!num1 )
-  return num1 + num2
+  if (!num1 || !num2 || isNaN(num1) || isNaN(num2)) {
+    return null
+  }
+
+  const result = BigInt(num1) + BigInt(num2)
+
+  return result.toString()
 }
 
 module.exports = solution

@@ -14,4 +14,4 @@ yarn dev
 
 ## Usage
 
-Change `solution.js` and `tests.js`
+Write solution under `solution.js` and write your tests under `tests.js`

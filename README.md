@@ -6,8 +6,8 @@ This is a simple test runner. It was mainly created for Codility tests to quickl
 ## Installation
 
 ```bash
-git clone <repo_url>
-cd testenv
+git clone https://github.com/Brostafa/codility-testenv.git
+cd codility-testenv
 yarn install
 yarn dev
 ```
